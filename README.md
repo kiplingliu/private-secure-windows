@@ -95,6 +95,7 @@ No. Traffic to Microsoft is limited, but for usability and security reasons, the
 - Automatic Root Certificates Update is enabled to automatically check the list of trusted authorities on Windows Update to see if an update is available
 - Network Connection Status Indicator (NCSI) sends a DNS request and HTTP query to http://www.msftconnecttest.com/connecttest.txt to determine if the device can communicate with the Internet. This is required to get Windows Updates and some other features
 - The "Microsoft Account Sign-in Assistant" service (wlidsvc) is enabled. This is required to get Windows Updates.
+- The "Windows License Manager" service (LicenseManager) is enabled. It verifies licenses for Microsoft Store apps, and disabling it prevents the Windows Security app from opening.
 - Telemetry is set to the lowest level availble for your Windows version. If you don't have the Enterprise/Education edition, some telemetry is still [sent to Microsoft](https://docs.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization).
 - This baseline might have flaws and does not cover all possibilities. Please submit an issue if you see room for improvement.
 

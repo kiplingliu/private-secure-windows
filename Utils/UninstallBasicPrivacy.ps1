@@ -36,26 +36,16 @@ if ($LASTEXITCODE -ne 0){
     $Failed = $true
 }
 
-# Security template: "LicenseManager",4 (Disabled). Windows default is Manual.
-# The template was applied to the local security database, which outlives the group policy folders
-# and would set the service back to Disabled on the next policy refresh. Apply the default the same way
+# Earlier versions of BasicPrivacy disabled the License Manager service with a security template
+# ("LicenseManager",4), which breaks the Windows Security app. LGPO applied it once, directly to the
+# service, so wiping group policy does not undo it. Windows default is Manual
 Write-Host "Resetting License Manager service" -ForegroundColor Cyan
-$Inf = Join-Path $env:TEMP "UninstallBasicPrivacy.inf"
-@"
-[Unicode]
-Unicode=yes
-[Version]
-signature="`$CHICAGO`$"
-Revision=1
-[Service General Setting]
-"LicenseManager",3,""
-"@ | Out-File -LiteralPath $Inf -Encoding unicode
-& "$PSScriptRoot\..\Tools\LGPO.exe" /s $Inf
-if ($LASTEXITCODE -ne 0 -or (Get-Service -Name LicenseManager).StartType -ne "Manual"){
-    Write-Warning "Failed to set License Manager service to Manual"
+try {
+    Set-Service -Name LicenseManager -StartupType Manual -ErrorAction Stop
+} catch {
+    Write-Warning "Failed to set License Manager service to Manual: $_"
     $Failed = $true
 }
-Remove-Item -LiteralPath $Inf
 
 # Registry values written outside the policy keys, which group policy does not clean up
 Write-Host "Reverting computer registry values" -ForegroundColor Cyan
